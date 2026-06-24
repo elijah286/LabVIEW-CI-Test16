@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "platform": "windows",
   "version": "win-7dd23cadea7a",
   "labview_version": "2026",
@@ -10,10 +10,12 @@
   "worker_layer": "seed-only-copy",
   "copied_from_base": true,
   "image_ref": "ghcr.io/elijah286/labview-ci-test16-labview:win-7dd23cadea7a",
-  "build_date": "2026-06-24T19:22:07Z",
-  "git_sha": "276a523db14773c5d1057a2049563b09c8f0a2f6",
-  "run_url": "https://github.com/elijah286/LabVIEW-CI-Test16/actions/runs/28123778533",
+  "build_date": "2026-06-24T22:32:31Z",
+  "git_sha": "69616c2f954c165cdd41cc072857ab70f434671f",
+  "run_url": "https://github.com/elijah286/LabVIEW-CI-Test16/actions/runs/28133893110",
   "vipc": [],
+  "vipm_raw": "",
+  "vipm_packages": [],
   "nipkg_raw": "",
   "nipkg_packages": []
 }
