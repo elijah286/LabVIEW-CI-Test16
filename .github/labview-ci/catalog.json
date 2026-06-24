@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "4.1.22",
+  "version": "4.1.29",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "installPause": {
@@ -11,6 +11,90 @@
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
+      {
+        "version": "4.1.29",
+        "date": "2026-06-24",
+        "title": "VI Analyzer runs on Windows only",
+        "type": "patch",
+        "summary": "VI Analyzer is now treated as a Windows-only capability everywhere the tooling resolves, installs, dispatches, or backfills it. The Linux VI Analyzer workflow and shell runner are retired, Populate history no longer offers a Linux VI Analyzer platform, and update cleanup can remove the old Linux workflow from existing installs.",
+        "highlights": [
+          "Removes Linux from the VI Analyzer catalog support matrix and stops installing the Linux workflow/script for new or updated repositories.",
+          "Routes dashboard Run, Populate history, report re-run, and missing-document recovery for VI Analyzer to the Windows workflow only.",
+          "Updates documentation, installer-generated dashboard triggers, and dependency status so they no longer suggest VI Analyzer runs on Linux."
+        ]
+      },
+      {
+        "version": "4.1.28",
+        "date": "2026-06-24",
+        "title": "VI Browser guides missing documents to Populate history",
+        "type": "patch",
+        "summary": "The VI Browser now preflights snapshot and report document URLs before framing them. Missing older-revision documents render an in-page explanation with a Populate history link instead of showing the raw GitHub Pages 404 page.",
+        "highlights": [
+          "Shows a native missing-document state when a VI snapshot HTML file has not been published for the selected revision.",
+          "Routes users to the dashboard Populate history flow with the selected revision already included.",
+          "Applies the same guard to VI Browser report lenses and the standalone report viewer so missing report documents do not frame a Pages 404."
+        ]
+      },
+      {
+        "version": "4.1.27",
+        "date": "2026-06-24",
+        "title": "History backfills restore the Pages publisher",
+        "type": "patch",
+        "summary": "Manual history/backfill report runs now restore the shared publish-gh-pages action from the default branch along with the current CI scripts before deploying reports. This fixes older target commits that generated a report artifact but failed at the Pages publish step because the local action did not exist in that historical checkout.",
+        "highlights": [
+          "Restores .github/actions/publish-gh-pages during historical Mass Compile, VI Analyzer, Unit Tests, VIDiff, and Antidoc manual runs.",
+          "Keeps the backfilled commit checkout for project sources while using the current report builders and Pages publisher.",
+          "Documents the historical-run restore behavior in the developer reference."
+        ]
+      },
+      {
+        "version": "4.1.26",
+        "date": "2026-06-24",
+        "title": "Dependency status uses installed VIPM inventory",
+        "type": "patch",
+        "summary": "Worker manifests now capture VIPM's installed-package list and the Dependencies page uses that inventory to decide installed vs. missing. Fresh seed manifests without a captured VIPM list no longer leave the Windows core tooling VIPC empty; the dashboard infers only the known core tooling packages there and leaves project VIPCs missing until a worker manifest proves they are installed.",
+        "highlights": [
+          "Adds vipm_raw and vipm_packages to worker manifest.json, populated from vipm list --installed when a worker image is locally available.",
+          "Uses vipm_packages as the Dependencies page installed-package source of truth before falling back to older vipc[] manifest data.",
+          "Keeps fresh-install seed copies fast while avoiding all-N/A/empty Windows core tooling status when a seed manifest has no installed VIPM capture."
+        ]
+      },
+      {
+        "version": "4.1.25",
+        "date": "2026-06-24",
+        "title": "Dependencies owns monitored files",
+        "type": "patch",
+        "summary": "Dependency-file monitoring now lives on the Dependencies page where the package details are visible. Configure keeps the global dependency policy, while VIPC and Dragon file rows show the monitored state, default discovered files to monitored on fresh dashboards, and lock the CI tooling VIPC on.",
+        "highlights": [
+          "Moves per-file monitoring out of Configure and into selectable VIPC/Dragon rows on the Dependencies page.",
+          "Defaults discovered dependency files to monitored on fresh dashboards and keeps .github/labview/vipm/ci-tooling.vipc locked on.",
+          "Carries monitor state in dependencies/index.json so unmonitored files do not produce missing-package warnings."
+        ]
+      },
+      {
+        "version": "4.1.24",
+        "date": "2026-06-24",
+        "title": "Mobile dashboard cards use a compact tile grid",
+        "type": "patch",
+        "summary": "On phones and narrow screens each revision card now lays its capabilities out as a responsive grid of compact tiles (label above value) instead of one full-width row per capability, so cards no longer leave a wide empty gutter down the middle and are far shorter to scroll.",
+        "highlights": [
+          "Capability cells flow into an auto-fit tile grid on mobile, filling the card width and roughly halving card height.",
+          "Each tile shows the capability name above its status badge, left-aligned, so the result reads top-to-bottom instead of label-left / badge-far-right.",
+          "Pure presentation change to the dashboard's responsive CSS; no data, report, or catalog contract changes."
+        ]
+      },
+      {
+        "version": "4.1.23",
+        "date": "2026-06-24",
+        "title": "Bake the VI Browser 2.0 render engine into the Linux worker (no separate build)",
+        "type": "minor",
+        "summary": "The position-aware VI Browser 2.0 render engine (the vendored Go lvctl renderer + batch runner) is now baked INTO the Linux worker image instead of being a separate -toimages image that each repository built for itself. Onboarding the pipeline no longer kicks off a heavy render-image build: the engine ships inside the Linux worker that clients already copy on install, so nothing has to be built to generate 2.0 screenshots. The Linux render workflow runs the worker image directly (invoking the render entrypoint), and the standalone build-toimages-image.yml workflow is retired.",
+        "highlights": [
+          "Bakes the render engine into .github/docker/labview-ci-linux.Dockerfile as a multi-stage build (byte-for-byte the same engine), so it is copied with the worker -- no separate image and no per-repo build.",
+          "Retires build-toimages-image.yml; vi-snapshots-json.yml now runs the Linux worker image via --entrypoint instead of pulling a separate render image.",
+          "Stops onboarding/install from triggering a render-image build (the remaining install-time background build users were seeing)."
+        ]
+      },
       {
         "version": "4.1.22",
         "date": "2026-06-24",
@@ -3658,8 +3742,7 @@
       "status": "stable",
       "recommended": true,
       "supportsOs": [
-        "windows",
-        "linux"
+        "windows"
       ],
       "requires": [],
       "recommends": [
@@ -3669,19 +3752,15 @@
       "statusContext": "CI / VI Analyzer",
       "files": {
         "any": [
-          ".github/labview/build-analyzer-report.py"
+          ".github/labview/build-analyzer-report.py",
+          ".github/labview/via-configs/"
         ],
         "windows": [
           ".github/workflows/run-vi-analyzer-windows-container.yml",
           ".github/labview/run-vi-analyzer.ps1"
-        ],
-        "linux": [
-          ".github/workflows/run-vi-analyzer-linux-container.yml",
-          ".github/labview/run-vi-analyzer.sh",
-          ".github/labview/via-configs/"
         ]
       },
-      "notes": "The full default test set (~90 tests) requires the custom image (enable “Shared LabVIEW image”). On the bare NI base image the analyzer reports “0 tests run”."
+      "notes": "Runs on Windows only. The full default test set (~90 tests) requires the custom image (enable “Shared LabVIEW image”). On the bare NI base image the analyzer reports “0 tests run”."
     },
     {
       "id": "vidiff",
@@ -3779,7 +3858,8 @@
           ".github/workflows/build-labview-linux-image.yml",
           ".github/workflows/copy-labview-linux-image.yml",
           ".github/docker/labview-ci-linux.Dockerfile",
-          ".github/labview/vipm/install-vipc-linux.sh"
+          ".github/labview/vipm/install-vipc-linux.sh",
+          ".github/labview/toimages/"
         ]
       },
       "notes": "Required when you want to bake .vipc dependencies into the worker. Any configured VIPC file is detected and baked automatically; if no config is present, repository VIPC files outside .github are staged."
@@ -3805,7 +3885,6 @@
           ".github/pages/vi-browser.html",
           ".github/pages/vi-interactive.html",
           ".github/pages/vi-render.js",
-          ".github/workflows/build-toimages-image.yml",
           ".github/labview/run-toimages.sh",
           ".github/labview/build-json-worklist.sh",
           ".github/labview/toimages/"
@@ -3817,7 +3896,7 @@
           ".github/workflows/vi-snapshots-json.yml"
         ]
       },
-      "notes": "Cross-platform position-aware renderer. The Linux path runs the toimages render image on ubuntu-latest; the Windows path runs the same Go engine in the stock NI Windows container (unless EXPERIMENTAL_WINDOWS_IMAGE is set). Renders publish <blob>.json (Linux) and <blob>.windows.json (Windows) beside the gallery, and build-toimages-image builds the shared render image."
+      "notes": "Cross-platform position-aware renderer. The Linux path runs the render engine that is BAKED INTO the Linux worker image (no separate build -- it is copied with the worker); the Windows path runs the same Go engine in the stock NI Windows container (unless EXPERIMENTAL_WINDOWS_IMAGE is set). Renders publish <blob>.json (Linux) and <blob>.windows.json (Windows) beside the gallery."
     },
     {
       "id": "unit-tests",
