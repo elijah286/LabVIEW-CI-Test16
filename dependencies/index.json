@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/LabVIEW-CI-Test16",
-  "sha": "276a523db14773c5d1057a2049563b09c8f0a2f6",
+  "sha": "69616c2f954c165cdd41cc072857ab70f434671f",
   "revisions": [
+    {
+      "sha": "69616c2f954c165cdd41cc072857ab70f434671f",
+      "short": "69616c2",
+      "message": "Add LabVIEW CI pipeline",
+      "author": "Elijah Kerry",
+      "date": "2026-06-24T22:32:20Z"
+    },
     {
       "sha": "276a523db14773c5d1057a2049563b09c8f0a2f6",
       "short": "276a523",
@@ -28,14 +35,20 @@
   "config": {
     "use": "",
     "actions": {},
-    "vipc": []
+    "vipc": [],
+    "dragon": [],
+    "hasVipcList": false,
+    "hasDragonList": false
   },
   "vipc": [
     {
       "path": ".github/labview/vipm/ci-tooling.vipc",
       "role": "core",
       "capability": "",
+      "tooling": true,
       "configured": true,
+      "monitored": true,
+      "locked": true,
       "packages": [
         "dataflow_g_lib_g_image-0.5.0.1",
         "jki_lib_caraya-1.4.4.148",
@@ -49,7 +62,10 @@
       "path": "COTC Dependencies.vipc",
       "role": "project",
       "capability": "",
+      "tooling": false,
       "configured": true,
+      "monitored": true,
+      "locked": false,
       "packages": [
         "dataflow_g_lib_g_image-0.5.0.1",
         "oglib_appcontrol-4.1.0.7",
@@ -182,7 +198,13 @@
       "defaultTag": "latest",
       "tag": "latest",
       "ready": true,
-      "packages": [],
+      "packages": [
+        "dataflow_g_lib_g_image-0.5.0.1",
+        "jki_lib_caraya-1.4.4.148",
+        "jki_vi_tester",
+        "ni_lib_junit_results_api-1.0.1.6",
+        "ni_lib_utf_junit_report-1.0.1.43"
+      ],
       "failed_packages": [],
       "nipkg_ready": true,
       "nipkg_packages": [],
